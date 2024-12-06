@@ -1,2 +1,3 @@
-# Terraform script to manage infrastructure on Azure
+# Terraform azure infra automation
+
 
