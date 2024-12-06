@@ -1,5 +1,5 @@
 # Ignorer les fichies générés par Terraform
-**/*.tfstate
-**/.terraform/
-**/*.tfstate.backup
+**/**/*.tfstate
+**/**/.terraform/
+**/**/*.tfstate.backup
 az.sh
