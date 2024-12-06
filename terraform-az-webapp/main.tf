@@ -38,7 +38,7 @@ resource "azurerm_windows_web_app" "webapp" {
 
 // Create SQL Database server
 module "Database" {
-    source = "../terraform-db-az"
+    source = "../terraform-az-database"
     password = var.password
     login = var.login
 }
