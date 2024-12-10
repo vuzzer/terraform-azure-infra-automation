@@ -16,13 +16,13 @@ provider "azurerm" {
 }
 
 resource "random_pet" "rg-name" {
-  prefix = "rg"
+  prefix = var.resource_group_name_prefix
 }
 
 // Create resource grup
 resource "azurerm_resource_group" "rg_vnet" {
   name     = random_pet.rg-name.id
-  location = "eastus"
+  location = var.resource_group_location
 }
 
 
@@ -117,7 +117,7 @@ resource "azurerm_firewall" "fw" {
   resource_group_name = azurerm_resource_group.rg_vnet.name
 
   sku_name = "AZFW_VNet"
-  sku_tier = "Standard"
+  sku_tier = var.firewall_sku_tier
 
   ip_configuration {
     name                 = "azfw-ipconfig"
