@@ -29,7 +29,7 @@ resource "azurerm_service_plan" "servicePlan" {
 
 // Create app service plan
 resource "azurerm_windows_web_app" "webapp" {
-  name                = "jin-webapp"
+  name                = var.webapp_name
   location            = azurerm_resource_group.tf.location
   resource_group_name = azurerm_resource_group.tf.name
   service_plan_id     = azurerm_service_plan.servicePlan.id
