@@ -62,18 +62,26 @@ stages:
       - job: deployTerraform
         displayName: "deploy infrastructure with terraform"
         steps:
-          - task: TerraformInstaller@0
-            displayName: 'Install terraform'
+          - task: CmdLine@2
             inputs:
-              terraformVersion: $(terraformVersion)
+              script: |
+                sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+
+                wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+
+                echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+                https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+                sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+                sudo apt update
+
+                sudo apt-get install terraform
+
+                terraform init
+                
+              workingDirectory: 'terraform-az-webapp/'
           
-          - script: terraform init
-            displayName: 'Initialize terraform'
-            workingDirectory: 'terraform-az-webapp/' 
-          
-          - script: terraform apply -auto-approve
-            displayName: 'Apply terraform configuration'
-            workingDirectory: 'terraform-az-webapp/'
+
 
 
         
