@@ -78,6 +78,10 @@ stages:
                 sudo apt-get install terraform
 
                 terraform init
+
+                terraform plan -out main.tfplan
+
+                terraform apply main.tfplan
                 
               workingDirectory: 'terraform-az-webapp/'
           
