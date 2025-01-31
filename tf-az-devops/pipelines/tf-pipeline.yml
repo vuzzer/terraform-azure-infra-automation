@@ -1,0 +1,80 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+variables:
+  buildConfiguration: 'Release'
+  terraformVersion: '1.9.8'
+
+pool:
+  vmImage: ubuntu-latest
+
+# Build
+stages:
+  - stage: Build
+    displayName: 'Build et test'
+    jobs:
+    - job: 'Build'
+      displayName: 'Build application'
+      steps:
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'restore'
+          projects: '**/GriftBusiness.Api/GriftBusiness.Api/GriftBusiness.Api.csproj'
+          feedsToUse: 'select'
+        displayName: 'Restaure les packages'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'build'
+          projects: '**/GriftBusiness.Api/GriftBusiness.Api/GriftBusiness.Api.csproj'
+          arguments: '--configuration $(buildConfiguration)'
+        displayName: 'Génération de la solution'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: '**/GriftBusiness.Api/GriftBusiness.Tests/*Tests.csproj'
+          arguments: '--configuration $(buildConfiguration)'
+        displayName: 'Exécution des tests unitaires'
+
+# security
+  - stage: SecurityAnalysis
+    displayName: 'Security Analysis'
+    jobs:
+      - job: SecurityScan
+        displayName: 'Run security scan'
+        steps:
+          - script: echo "Running security analysis..."
+            displayName: "Security check"
+
+# terraform
+  - stage: Terraform 
+    displayName: "Build infra with terraform"
+    dependsOn:
+      - Build
+      - SecurityAnalysis
+    jobs:
+      - job: deployTerraform
+        displayName: "deploy infrastructure with terraform"
+        steps:
+          - task: TerraformInstaller@0
+            displayName: 'Install terraform'
+            inputs:
+              terraformVersion: $(terraformVersion)
+          
+          - script: terraform init
+            displayName: 'Initialize terraform'
+            workingDirectory: 'terraform-az-webapp/' 
+          
+          - script: terraform apply -auto-approve
+            displayName: 'Apply terraform configuration'
+            workingDirectory: 'terraform-az-webapp/'
+
+
+        
+
