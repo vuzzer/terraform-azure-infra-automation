@@ -1,0 +1,6 @@
+@GriftBusiness.Api_HostAddress = http://localhost:5195
+
+GET {{GriftBusiness.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
